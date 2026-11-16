@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red's Tracker — Insurance Department Operations & Performance Hub</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-alt: #273549;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 10px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Header & Navigation */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .header-top {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #fff;
+    }
+
+    .brand p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    nav.tabs {
+      max-width: 1280px;
+      margin: 1rem auto 0;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 1.5rem auto;
+      padding: 0 1.25rem 3rem;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards & Grid */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Form Controls */
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.92rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 0.9rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      border-radius: 7px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: var(--accent-hover); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      background: var(--surface-alt);
+      border-color: var(--text-muted);
+    }
+
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
+
+    /* Hourly Dial Grid */
+    .dial-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem;
+    }
+
+    .dial-box h4 {
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dial-row {
+      display: grid;
+      grid-template-columns: 1fr 90px;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    /* Shift Report Card */
+    .shift-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: opacity 0.2s;
+    }
+
+    .shift-card.disabled {
+      opacity: 0.55;
+    }
+
+    .shift-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .shift-card-header input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .shift-card-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #fff;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    /* Output Box */
+    .output-area {
+      font-family: "Courier New", Courier, monospace;
+      background: #090d16;
+      color: #e2e8f0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    /* Checkboxes List */
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.6rem;
+      background: var(--surface-alt);
+      border-radius: 6px;
+      margin-bottom: 0.45rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--primary);
+    }
+
+    /* Pill Shortcuts */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+
+    .pill {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .pill:hover {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    /* KPI Cards */
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 0.3rem;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      color: var(--accent);
+      margin-top: 0.2rem;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 0.7rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      letter-spacing: 0.4px;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 999;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <h1>Red's Tracker</h1>
+      <p>Insurance Department — EOD Reports, Appointment Notes & Worked Hours Hub</p>
+    </div>
+    <div style="display:flex; gap:0.5rem; align-items:center;">
+      <span id="storageBadge" class="badge badge-green">Auto-Saved Locally</span>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('eod')">1. EOD Report</button>
+    <button class="tab-btn" onclick="switchTab('notes')">2. Note Generator</button>
+    <button class="tab-btn" onclick="switchTab('hours')">3. Hours Submission</button>
+    <button class="tab-btn" onclick="switchTab('log')">4. Master Log & Summary</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ==================== TAB 1: EOD REPORT GENERATOR ==================== -->
+  <section id="tab-eod" class="tab-panel active">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">EOD Performance Report Setup</span>
+        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+          <label for="eodDate" style="margin:0;">Report Date:</label>
+          <input type="date" id="eodDate" style="width:auto;" onchange="saveEodState()" />
+          <button class="btn btn-outline btn-sm" onclick="resetEodCounters()">Reset Counters</button>
+        </div>
+      </div>
+
+      <!-- Hourly Dial Breakdown -->
+      <h3 style="font-size:0.95rem; margin-bottom:0.75rem; color:#cbd5e1;">Hourly Dial Counter Grid (Auto-Syncs Shift Dials)</h3>
+      <div class="grid-3" style="margin-bottom:1.5rem;">
+        <!-- Pre Shift Dials -->
+        <div class="dial-box">
+          <h4><span>Pre Shift (10:00 - 12:00)</span> <span id="preTotalBadge" class="badge">0 Dials</span></h4>
+          <div class="dial-row">
+            <span>10:00 - 11:00</span>
+            <input type="number" min="0" id="d_pre_1" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>11:00 - 12:00</span>
+            <input type="number" min="0" id="d_pre_2" oninput="syncHourlyDials()" />
+          </div>
+        </div>
+
+        <!-- 1st Shift Dials -->
+        <div class="dial-box">
+          <h4><span>1st Shift (12:30 - 4:30)</span> <span id="firstTotalBadge" class="badge">229 Dials</span></h4>
+          <div class="dial-row">
+            <span>12:30 - 1:30 (1st Half)</span>
+            <input type="number" min="0" id="d_1st_1" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>1:30 - 2:30 (1st Half)</span>
+            <input type="number" min="0" id="d_1st_2" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>2:45 - 3:30 (2nd Half)</span>
+            <input type="number" min="0" id="d_1st_3" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>3:30 - 4:30 (2nd Half)</span>
+            <input type="number" min="0" id="d_1st_4" oninput="syncHourlyDials()" />
+          </div>
+        </div>
+
+        <!-- 2nd Shift Dials -->
+        <div class="dial-box">
+          <h4><span>2nd Shift (5:00 - 9:00)</span> <span id="secondTotalBadge" class="badge">0 Dials</span></h4>
+          <div class="dial-row">
+            <span>5:00 - 6:00 (1st Half)</span>
+            <input type="number" min="0" id="d_2nd_1" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>6:00 - 7:00 (1st Half)</span>
+            <input type="number" min="0" id="d_2nd_2" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>7:15 - 8:00 (2nd Half)</span>
+            <input type="number" min="0" id="d_2nd_3" oninput="syncHourlyDials()" />
+          </div>
+          <div class="dial-row">
+            <span>8:00 - 9:00 (2nd Half)</span>
+            <input type="number" min="0" id="d_2nd_4" oninput="syncHourlyDials()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 Shift Performance Cards -->
+      <h3 style="font-size:0.95rem; margin-bottom:0.75rem; color:#cbd5e1;">Shift Report Blocks (Check Box to Include in Generated Report)</h3>
+      <div id="shiftCardsContainer" class="grid-2"></div>
+    </div>
+
+    <!-- Live EOD Output -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Generated EOD Report Output</span>
+        <button class="btn btn-accent" onclick="copyText('eodOutput', 'EOD Report copied to clipboard!')">Copy EOD Report</button>
+      </div>
+      <textarea id="eodOutput" class="output-area" readonly></textarea>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 2: NOTE GENERATOR ==================== -->
+  <section id="tab-notes" class="tab-panel">
+    <div class="grid-2">
+      <!-- Left: Checkboxes & Client Details -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Appointment Note Builder</span>
+          <button class="btn btn-outline btn-sm" onclick="resetNoteForm()">Reset Form</button>
+        </div>
+
+        <h4 style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">ALERT & TIMING TAGS</h4>
+        <div class="grid-2" style="gap:0.4rem; margin-bottom:1rem;">
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Same Day Appointment" onchange="updateNoteOutput()"> Same Day Appointment</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Next Day Appointment" checked onchange="updateNoteOutput()"> Next Day Appointment</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Verified Appointment" onchange="updateNoteOutput()"> Verified Appointment</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Preset Appointment" onchange="updateNoteOutput()"> Preset Appointment</label>
+        </div>
+
+        <h4 style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">MEETING MODE</h4>
+        <div class="grid-3" style="gap:0.4rem; margin-bottom:1rem;">
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Zoom Ready" onchange="updateNoteOutput()"> Zoom Ready</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="PHONE CALL" checked onchange="updateNoteOutput()"> PHONE CALL</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="with Internet access" onchange="updateNoteOutput()"> with Internet access</label>
+        </div>
+
+        <h4 style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">MARITAL / HOUSEHOLD STATUS</h4>
+        <div class="grid-2" style="gap:0.4rem; margin-bottom:1.25rem;">
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Single" onchange="updateNoteOutput()"> Single</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Married" onchange="updateNoteOutput()"> Married</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Living with significant other" checked onchange="updateNoteOutput()"> Living with significant other</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Divorced" onchange="updateNoteOutput()"> Divorced</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Separated" onchange="updateNoteOutput()"> Separated</label>
+          <label class="check-item"><input type="checkbox" class="note-tag" value="Widowed" onchange="updateNoteOutput()"> Widowed</label>
+        </div>
+
+        <h4 style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.65rem;">CLIENT DETAILS</h4>
+        <div class="grid-2" style="gap:0.75rem;">
+          <div class="form-group">
+            <label>Manager's Name</label>
+            <input type="text" id="noteManager" value="AHMED MUSTAFA" oninput="updateNoteOutput()" />
+            <div class="pill-group">
+              <span class="pill" onclick="setVal('noteManager','TAMI CHAIMOV'); updateNoteOutput();">TAMI CHAIMOV</span>
+              <span class="pill" onclick="setVal('noteManager','AHMED MUSTAFA'); updateNoteOutput();">AHMED MUSTAFA</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Lead Type</label>
+            <input type="text" id="noteLeadType" value="POS" oninput="updateNoteOutput()" />
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="noteState" value="WV" oninput="updateNoteOutput()" />
+          </div>
+          <div class="form-group">
+            <label>Client Name</label>
+            <input type="text" id="noteClientName" value="CATHY MCCORMICK" oninput="updateNoteOutput()" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="noteEmail" value="CAT.1954@HOTMAIL.COM" oninput="updateNoteOutput()" />
+          </div>
+          <div class="form-group">
+            <label>CP# (Cell Phone)</label>
+            <input type="text" id="noteCp" value="(304) 960-9253" oninput="updateNoteOutput()" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Schedule</label>
+          <input type="text" id="noteSchedule" value="8:00pm - 8:30pm, Tuesday, November 17, 2026" oninput="updateNoteOutput()" />
+        </div>
+
+        <div class="grid-2" style="gap:0.75rem;">
+          <div class="form-group">
+            <label>Time Zone</label>
+            <select id="noteTimezone" onchange="updateNoteOutput()">
+              <option value="Eastern Time - US & Canada" selected>Eastern Time - US & Canada</option>
+              <option value="Central Time - US & Canada">Central Time - US & Canada</option>
+              <option value="Mountain Time - US & Canada">Mountain Time - US & Canada</option>
+              <option value="Pacific Time - US & Canada">Pacific Time - US & Canada</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Best CB # <span class="pill" style="margin-left:6px;" onclick="copyCpToCb()">Same as CP#</span></label>
+            <input type="text" id="noteBestCb" value="(304) 960-9253" oninput="updateNoteOutput()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live Note Output -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Generated Result (Copy Below)</span>
+          <button class="btn btn-accent" onclick="copyText('noteOutput', 'Appointment note copied!')">Copy Note</button>
+        </div>
+        <textarea id="noteOutput" class="output-area" style="min-height:420px;" readonly></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 3: HOURS SUBMISSION ==================== -->
+  <section id="tab-hours" class="tab-panel">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Log Worked Shift</span>
+        </div>
+        <form id="hoursForm" onsubmit="submitShiftHours(event)">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="hrDate" required />
+          </div>
+
+          <div class="form-group">
+            <label>Manager</label>
+            <input type="text" id="hrManager" placeholder="Type manager's name" required />
+            <div class="pill-group">
+              <span class="pill" onclick="setVal('hrManager','TAMI CHAIMOV')">TAMI CHAIMOV</span>
+              <span class="pill" onclick="setVal('hrManager','AHMED MUSTAFA')">AHMED MUSTAFA</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Shift Type</label>
+            <select id="hrShiftType" onchange="recalcShiftHours()">
+              <option value="Pre Shift">Pre Shift (2.00 hrs)</option>
+              <option value="1st Shift" selected>1st Shift (4.00 hrs)</option>
+              <option value="2nd Shift">2nd Shift (4.00 hrs)</option>
+              <option value="Cover">Cover (Custom hrs)</option>
+            </select>
+          </div>
+
+          <div class="grid-2" style="gap:0.75rem;">
+            <div class="form-group">
+              <label>Custom / Cover Hours</label>
+              <input type="number" step="0.25" min="0" id="hrCustom" placeholder="Optional (blank = standard)" oninput="recalcShiftHours()" />
+            </div>
+            <div class="form-group">
+              <label>Calculated Shift Hours</label>
+              <input type="text" id="hrCalculated" value="4.00" readonly style="background:#090d16; font-weight:700; color:var(--accent);" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Notes</label>
+            <input type="text" id="hrNotes" placeholder="Optional remarks or cover details" />
+          </div>
+
+          <button type="submit" class="btn btn-accent" style="width:100%; padding:0.8rem;">Submit Worked Hours →</button>
+        </form>
+      </div>
+
+      <!-- Last Logged Submission Preview -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Last Logged Submission Preview</span>
+        </div>
+        <div id="lastSubmissionBox" style="color:var(--text-muted); font-size:0.9rem;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 4: MASTER LOG & EXECUTIVE SUMMARY ==================== -->
+  <section id="tab-log" class="tab-panel">
+    <!-- KPI Row -->
+    <div class="grid-4" style="margin-bottom:1.25rem;">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Worked Hours</div>
+        <div class="kpi-value" id="kpiTotalHours">0.00</div>
+        <div class="kpi-sub">All Logged Shifts</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Shifts Logged</div>
+        <div class="kpi-value" id="kpiTotalShifts">0</div>
+        <div class="kpi-sub">Recorded Entries</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Cover Shifts Count</div>
+        <div class="kpi-value" id="kpiCoverCount">0</div>
+        <div class="kpi-sub">Cover / Extra Entries</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Hours / Shift</div>
+        <div class="kpi-value" id="kpiAvgHours">0.00</div>
+        <div class="kpi-sub">Mean Shift Duration</div>
+      </div>
+    </div>
+
+    <!-- Manager Breakdown -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Manager Hours Breakdown</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Manager</th>
+              <th>Pre-Shift (hrs)</th>
+              <th>1st Shift (hrs)</th>
+              <th>2nd Shift (hrs)</th>
+              <th>Cover (hrs)</th>
+              <th>Total Worked Hours</th>
+              <th>Shifts Logged</th>
+            </tr>
+          </thead>
+          <tbody id="managerBreakdownBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Weekly Hours Summary (Sunday - Saturday) -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Weekly Hours Summary (Sunday – Saturday)</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Week Start (Sun)</th>
+              <th>Week End (Sat)</th>
+              <th>Total Hours</th>
+              <th>Total Shifts</th>
+              <th>Pre-Shift (hrs)</th>
+              <th>1st Shift (hrs)</th>
+              <th>2nd Shift (hrs)</th>
+              <th>Cover (hrs)</th>
+            </tr>
+          </thead>
+          <tbody id="weeklySummaryBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Full Shift History Log -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Full Shift History Log</span>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <input type="text" id="logSearch" placeholder="Search manager or notes..." style="width:200px;" oninput="renderMasterLog()" />
+          <select id="logShiftFilter" style="width:140px;" onchange="renderMasterLog()">
+            <option value="">All Shifts</option>
+            <option value="Pre Shift">Pre Shift</option>
+            <option value="1st Shift">1st Shift</option>
+            <option value="2nd Shift">2nd Shift</option>
+            <option value="Cover">Cover</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="exportLogsCSV()">Export CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="exportLogsJSON()">Export JSON</button>
+          <button class="btn btn-danger btn-sm" onclick="resetSeedData()">Reset Sample Data</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Date</th>
+              <th>Manager</th>
+              <th>Shift Type</th>
+              <th>Base Hrs</th>
+              <th>Worked Hrs</th>
+              <th>Notes</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="fullLogBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast">Copied to clipboard!</div>
+
+<script>
+  const STORAGE_KEY_EOD = 'reds_tracker_eod_v1';
+  const STORAGE_KEY_LOGS = 'reds_tracker_logs_v1';
+
+  const SHIFT_DEFINITIONS = [
+    { id: 'pre', title: 'PRE SHIFT PERFORMANCE REPORT', window: '10:00 - 12:00 EST', defaultHours: 2 },
+    { id: '1st', title: '1ST SHIFT PERFORMANCE REPORT', window: '12:30 - 4:30 EST', defaultHours: 4 },
+    { id: '1st_h1', title: '1ST SHIFT 1st half PERFORMANCE REPORT', window: '12:30 - 2:30 EST', defaultHours: 2 },
+    { id: '1st_h2', title: '1ST SHIFT second half PERFORMANCE REPORT', window: '2:30 - 4:30 EST', defaultHours: 2 },
+    { id: '2nd', title: '2ND SHIFT PERFORMANCE REPORT', window: '5:00 - 9:00 EST', defaultHours: 4 },
+    { id: '2nd_h1', title: '2ND SHIFT 1st half PERFORMANCE REPORT', window: '5:00 - 7:00 EST', defaultHours: 2 },
+    { id: '2nd_h2', title: '2ND SHIFT second half PERFORMANCE REPORT', window: '7:00 - 9:00 EST', defaultHours: 2 }
+  ];
+
+  // Default seeded EOD state matching Red's Tracker (11/16/2026)
+  function getDefaultEodState() {
+    return {
+      date: '2026-11-16',
+      hourly: {
+        pre_1: 0, pre_2: 0,
+        first_1: 53, first_2: 58, first_3: 56, first_4: 62,
+        second_1: 0, second_2: 0, second_3: 0, second_4: 0
+      },
+      shifts: {
+        pre:    { enabled: false, dials: 0,   manager: '',              confirmed: 0, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 2 },
+        '1st':  { enabled: true,  dials: 229, manager: 'TAMI CHAIMOV',  confirmed: 2, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 4 },
+        '1st_h1':{ enabled: false, dials: 111, manager: '',             confirmed: 0, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 2 },
+        '1st_h2':{ enabled: false, dials: 118, manager: '',             confirmed: 0, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 2 },
+        '2nd':  { enabled: true,  dials: 0,   manager: 'AHMED MUSTAFA', confirmed: 1, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 4 },
+        '2nd_h1':{ enabled: false, dials: 0,   manager: '',             confirmed: 0, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 2 },
+        '2nd_h2':{ enabled: false, dials: 0,   manager: '',             confirmed: 0, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: 2 }
+      }
+    };
+  }
+
+  // Default seeded Worked Hours Logs matching Red's Tracker
+  function getDefaultLogs() {
+    return [
+      {
+        id: 'seed-1',
+        timestamp: '2026-11-16 16:35:00',
+        date: '2026-11-16',
+        manager: 'TAMI CHAIMOV',
+        shiftType: '1st Shift',
+        baseHours: 4.00,
+        workedHours: 4.00,
+        notes: ''
+      },
+      {
+        id: 'seed-2',
+        timestamp: '2026-11-16 17:40:12',
+        date: '2026-11-16',
+        manager: 'AHMED MUSTAFA',
+        shiftType: '1st Shift',
+        baseHours: 4.00,
+        workedHours: 4.00,
+        notes: ''
+      }
+    ];
+  }
+
+  let eodState = JSON.parse(localStorage.getItem(STORAGE_KEY_EOD)) || getDefaultEodState();
+  let shiftLogs = JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS)) || getDefaultLogs();
+
+  // Tab Navigation
+  function switchTab(tabName) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    event.target.classList.add('active');
+    if (tabName === 'log') renderMasterLog();
+    if (tabName === 'hours') renderLastSubmission();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function copyText(elementId, message) {
+    const el = document.getElementById(elementId);
+    el.select();
+    el.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(el.value).then(() => showToast(message));
+  }
+
+  function setVal(id, val) {
+    document.getElementById(id).value = val;
+  }
+
+  // ==================== EOD REPORT LOGIC ====================
+  function initEodUI() {
+    document.getElementById('eodDate').value = eodState.date;
+    document.getElementById('d_pre_1').value = eodState.hourly.pre_1;
+    document.getElementById('d_pre_2').value = eodState.hourly.pre_2;
+    document.getElementById('d_1st_1').value = eodState.hourly.first_1;
+    document.getElementById('d_1st_2').value = eodState.hourly.first_2;
+    document.getElementById('d_1st_3').value = eodState.hourly.first_3;
+    document.getElementById('d_1st_4').value = eodState.hourly.first_4;
+    document.getElementById('d_2nd_1').value = eodState.hourly.second_1;
+    document.getElementById('d_2nd_2').value = eodState.hourly.second_2;
+    document.getElementById('d_2nd_3').value = eodState.hourly.second_3;
+    document.getElementById('d_2nd_4').value = eodState.hourly.second_4;
+
+    renderShiftCards();
+    updateHourlyBadges();
+    generateEodReport();
+  }
+
+  function renderShiftCards() {
+    const container = document.getElementById('shiftCardsContainer');
+    container.innerHTML = '';
+
+    SHIFT_DEFINITIONS.forEach(def => {
+      const st = eodState.shifts[def.id];
+      const totalAppt = (Number(st.confirmed) || 0) + (Number(st.presetBooked) || 0) + (Number(st.presetConfirmed) || 0);
+
+      const card = document.createElement('div');
+      card.className = 'shift-card' + (st.enabled ? '' : ' disabled');
+      card.innerHTML = `
+        <div class="shift-card-header">
+          <input type="checkbox" id="chk_${def.id}" ${st.enabled ? 'checked' : ''} onchange="toggleShift('${def.id}', this.checked)">
+          <div>
+            <div class="shift-card-title">${def.title}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Shift: ${def.window} | Default: ${def.defaultHours} hrs</div>
+          </div>
+        </div>
+        <div class="mini-grid">
+          <div class="form-group">
+            <label>Dials</label>
+            <input type="number" min="0" value="${st.dials}" oninput="updateShiftField('${def.id}', 'dials', Number(this.value))">
+          </div>
+          <div class="form-group">
+            <label>Manager's Name</label>
+            <input type="text" value="${st.manager}" placeholder="e.g. TAMI CHAIMOV" oninput="updateShiftField('${def.id}', 'manager', this.value)">
+          </div>
+          <div class="form-group">
+            <label>Confirmed Appt Booked</label>
+            <input type="number" min="0" value="${st.confirmed}" oninput="updateShiftField('${def.id}', 'confirmed', Number(this.value))">
+          </div>
+          <div class="form-group">
+            <label>Preset Appt Booked</label>
+            <input type="number" min="0" value="${st.presetBooked}" oninput="updateShiftField('${def.id}', 'presetBooked', Number(this.value))">
+          </div>
+          <div class="form-group">
+            <label>Preset Appt Confirmed</label>
+            <input type="number" min="0" value="${st.presetConfirmed}" oninput="updateShiftField('${def.id}', 'presetConfirmed', Number(this.value))">
+          </div>
+          <div class="form-group">
+            <label>System Issue Time Out</label>
+            <input type="number" min="0" step="0.25" value="${st.sysTimeout}" oninput="updateShiftField('${def.id}', 'sysTimeout', Number(this.value))">
+          </div>
+          <div class="form-group">
+            <label>Total Hours</label>
+            <input type="number" min="0" step="0.25" value="${st.hours}" oninput="updateShiftField('${def.id}', 'hours', Number(this.value))">
+          </div>
+          <div class="form-group">
+            <label>Total Appointment (Auto)</label>
+            <input type="number" id="totAppt_${def.id}" value="${totalAppt}" readonly style="background:#090d16; color:var(--accent); font-weight:700;">
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function toggleShift(id, checked) {
+    eodState.shifts[id].enabled = checked;
+    saveEodState();
+    renderShiftCards();
+    generateEodReport();
+  }
+
+  function updateShiftField(id, field, value) {
+    eodState.shifts[id][field] = value;
+    const st = eodState.shifts[id];
+    const totalAppt = (Number(st.confirmed) || 0) + (Number(st.presetBooked) || 0) + (Number(st.presetConfirmed) || 0);
+    const apptEl = document.getElementById('totAppt_' + id);
+    if (apptEl) apptEl.value = totalAppt;
+    saveEodState();
+    generateEodReport();
+  }
+
+  function syncHourlyDials() {
+    const h = eodState.hourly;
+    h.pre_1 = Number(document.getElementById('d_pre_1').value) || 0;
+    h.pre_2 = Number(document.getElementById('d_pre_2').value) || 0;
+    h.first_1 = Number(document.getElementById('d_1st_1').value) || 0;
+    h.first_2 = Number(document.getElementById('d_1st_2').value) || 0;
+    h.first_3 = Number(document.getElementById('d_1st_3').value) || 0;
+    h.first_4 = Number(document.getElementById('d_1st_4').value) || 0;
+    h.second_1 = Number(document.getElementById('d_2nd_1').value) || 0;
+    h.second_2 = Number(document.getElementById('d_2nd_2').value) || 0;
+    h.second_3 = Number(document.getElementById('d_2nd_3').value) || 0;
+    h.second_4 = Number(document.getElementById('d_2nd_4').value) || 0;
+
+    eodState.shifts.pre.dials = h.pre_1 + h.pre_2;
+    eodState.shifts['1st_h1'].dials = h.first_1 + h.first_2;
+    eodState.shifts['1st_h2'].dials = h.first_3 + h.first_4;
+    eodState.shifts['1st'].dials = eodState.shifts['1st_h1'].dials + eodState.shifts['1st_h2'].dials;
+    eodState.shifts['2nd_h1'].dials = h.second_1 + h.second_2;
+    eodState.shifts['2nd_h2'].dials = h.second_3 + h.second_4;
+    eodState.shifts['2nd'].dials = eodState.shifts['2nd_h1'].dials + eodState.shifts['2nd_h2'].dials;
+
+    updateHourlyBadges();
+    saveEodState();
+    renderShiftCards();
+    generateEodReport();
+  }
+
+  function updateHourlyBadges() {
+    const h = eodState.hourly;
+    document.getElementById('preTotalBadge').textContent = `${h.pre_1 + h.pre_2} Dials`;
+    document.getElementById('firstTotalBadge').textContent = `${h.first_1 + h.first_2 + h.first_3 + h.first_4} Dials`;
+    document.getElementById('secondTotalBadge').textContent = `${h.second_1 + h.second_2 + h.second_3 + h.second_4} Dials`;
+  }
+
+  function saveEodState() {
+    eodState.date = document.getElementById('eodDate').value;
+    localStorage.setItem(STORAGE_KEY_EOD, JSON.stringify(eodState));
+    generateEodReport();
+  }
+
+  function formatDisplayDate(isoDate) {
+    if (!isoDate) return '';
+    const [y, m, d] = isoDate.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function generateEodReport() {
+    const formattedDate = formatDisplayDate(eodState.date);
+    let lines = [
+      'EOD PERFORMANCE REPORT GENERATOR',
+      'INSURANCE DEPARTMENT',
+      `Date: ${formattedDate}`,
+      ''
+    ];
+
+    let activeCount = 0;
+    SHIFT_DEFINITIONS.forEach(def => {
+      const st = eodState.shifts[def.id];
+      if (!st.enabled) return;
+      activeCount++;
+      const totalAppt = (Number(st.confirmed) || 0) + (Number(st.presetBooked) || 0) + (Number(st.presetConfirmed) || 0);
+      lines.push(`${def.title} (Shift: ${def.window}, Hours: ${def.defaultHours})`);
+      lines.push(`DIALS: ${st.dials}`);
+      lines.push(`MANAGERS NAME: ${st.manager.toUpperCase()}`);
+      lines.push(`NUMBER OF CONFIRMED APPT BOOKED: ${st.confirmed}`);
+      lines.push(`NUMBER OF PRESET APPT BOOKED: ${st.presetBooked}`);
+      lines.push(`NUMBER OF PRESET APPT CONFIRMED: ${st.presetConfirmed}`);
+      lines.push(`SYSTEM ISSUE TIME OUT: ${st.sysTimeout}`);
+      lines.push(`TOTAL HOURS: ${st.hours}`);
+      lines.push(`TOTAL APPOINTMENT: ${totalAppt}`);
+      lines.push('');
+    });
+
+    if (activeCount === 0) {
+      lines.push('(Check at least one shift box above to generate report blocks)');
+    }
+
+    document.getElementById('eodOutput').value = lines.join('\n').trim();
+  }
+
+  function resetEodCounters() {
+    if (!confirm('Reset all EOD dials, appointments, and managers to zero/blank?')) return;
+    eodState.hourly = { pre_1:0, pre_2:0, first_1:0, first_2:0, first_3:0, first_4:0, second_1:0, second_2:0, second_3:0, second_4:0 };
+    SHIFT_DEFINITIONS.forEach(def => {
+      eodState.shifts[def.id] = {
+        enabled: false, dials: 0, manager: '', confirmed: 0, presetBooked: 0, presetConfirmed: 0, sysTimeout: 0, hours: def.defaultHours
+      };
+    });
+    saveEodState();
+    initEodUI();
+    showToast('EOD counters reset');
+  }
+
+  // ==================== NOTE GENERATOR LOGIC ====================
+  function copyCpToCb() {
+    document.getElementById('noteBestCb').value = document.getElementById('noteCp').value;
+    updateNoteOutput();
+  }
+
+  function updateNoteOutput() {
+    const checkedTags = Array.from(document.querySelectorAll('.note-tag:checked')).map(cb => cb.value);
+    const manager = document.getElementById('noteManager').value.trim().toUpperCase();
+    const leadType = document.getElementById('noteLeadType').value.trim().toUpperCase();
+    const state = document.getElementById('noteState').value.trim().toUpperCase();
+    const name = document.getElementById('noteClientName').value.trim().toUpperCase();
+    const email = document.getElementById('noteEmail').value.trim().toUpperCase();
+    const cp = document.getElementById('noteCp').value.trim();
+    const schedule = document.getElementById('noteSchedule').value.trim();
+    const tz = document.getElementById('noteTimezone').value;
+    const bestCb = document.getElementById('noteBestCb').value.trim();
+
+    const headerTags = checkedTags.join(' | ');
+    const noteLines = [
+      headerTags ? headerTags : '',
+      headerTags ? '' : null,
+      `Manager's Name: ${manager}`,
+      `Lead Type: ${leadType}`,
+      `State: ${state}`,
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `CP#: ${cp}`,
+      `SCHEDULE: ${schedule}`,
+      `Time Zone: ${tz}`,
+      `Best CB #: ${bestCb}`
+    ].filter(line => line !== null);
+
+    document.getElementById('noteOutput').value = noteLines.join('\n');
+  }
+
+  function resetNoteForm() {
+    document.querySelectorAll('.note-tag').forEach(cb => cb.checked = false);
+    ['noteManager','noteLeadType','noteState','noteClientName','noteEmail','noteCp','noteSchedule','noteBestCb'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    updateNoteOutput();
+    showToast('Note form cleared');
+  }
+
+  // ==================== HOURS SUBMISSION & MASTER LOG LOGIC ====================
+  function recalcShiftHours() {
+    const type = document.getElementById('hrShiftType').value;
+    const customVal = document.getElementById('hrCustom').value;
+    let base = 4.00;
+    if (type === 'Pre Shift') base = 2.00;
+    else if (type === '1st Shift' || type === '2nd Shift') base = 4.00;
+    else if (type === 'Cover') base = 0.00;
+
+    const finalHrs = customVal !== '' ? Number(customVal) : base;
+    document.getElementById('hrCalculated').value = finalHrs.toFixed(2);
+  }
+
+  function submitShiftHours(e) {
+    e.preventDefault();
+    const date = document.getElementById('hrDate').value;
+    const manager = document.getElementById('hrManager').value.trim().toUpperCase();
+    const shiftType = document.getElementById('hrShiftType').value;
+    const customVal = document.getElementById('hrCustom').value;
+    const notes = document.getElementById('hrNotes').value.trim();
+
+    let baseHours = 4.00;
+    if (shiftType === 'Pre Shift') baseHours = 2.00;
+    else if (shiftType === 'Cover') baseHours = 0.00;
+
+    const workedHours = customVal !== '' ? Number(customVal) : baseHours;
+
+    const now = new Date();
+    const ts = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+    const entry = {
+      id: 'log-' + Date.now(),
+      timestamp: ts,
+      date,
+      manager,
+      shiftType,
+      baseHours: Number(baseHours.toFixed(2)),
+      workedHours: Number(workedHours.toFixed(2)),
+      notes
+    };
+
+    shiftLogs.unshift(entry);
+    localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(shiftLogs));
+
+    document.getElementById('hrCustom').value = '';
+    document.getElementById('hrNotes').value = '';
+    recalcShiftHours();
+    renderLastSubmission();
+    renderMasterLog();
+    showToast(`Logged ${workedHours.toFixed(2)} hrs for ${manager}`);
+  }
+
+  function renderLastSubmission() {
+    const box = document.getElementById('lastSubmissionBox');
+    if (shiftLogs.length === 0) {
+      box.innerHTML = '<p>No shifts logged yet.</p>';
+      return;
+    }
+    const last = shiftLogs[0];
+    box.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Date</th>
+              <th>Manager</th>
+              <th>Shift Type</th>
+              <th>Base Hrs</th>
+              <th>Worked Hrs</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${last.timestamp}</td>
+              <td>${last.date}</td>
+              <td><strong>${last.manager}</strong></td>
+              <td><span class="badge">${last.shiftType}</span></td>
+              <td>${Number(last.baseHours).toFixed(2)}</td>
+              <td><strong style="color:var(--accent);">${Number(last.workedHours).toFixed(2)}</strong></td>
+              <td>${last.notes || '—'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function getSundayOfWeek(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const day = dt.getDay(); // 0 = Sunday
+    dt.setDate(dt.getDate() - day);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  }
+
+  function addDays(dateStr, days) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    dt.setDate(dt.getDate() + days);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  }
+
+  function renderMasterLog() {
+    // 1. KPIs
+    const totalHrs = shiftLogs.reduce((sum, item) => sum + Number(item.workedHours), 0);
+    const totalShifts = shiftLogs.length;
+    const coverCount = shiftLogs.filter(item => item.shiftType === 'Cover').length;
+    const avgHrs = totalShifts > 0 ? totalHrs / totalShifts : 0;
+
+    document.getElementById('kpiTotalHours').textContent = totalHrs.toFixed(2);
+    document.getElementById('kpiTotalShifts').textContent = totalShifts;
+    document.getElementById('kpiCoverCount').textContent = coverCount;
+    document.getElementById('kpiAvgHours').textContent = avgHrs.toFixed(2);
+
+    // 2. Manager Breakdown
+    const mgrMap = {};
+    shiftLogs.forEach(item => {
+      const m = item.manager || 'UNKNOWN';
+      if (!mgrMap[m]) {
+        mgrMap[m] = { pre: 0, first: 0, second: 0, cover: 0, total: 0, count: 0 };
+      }
+      const hrs = Number(item.workedHours);
+      if (item.shiftType === 'Pre Shift') mgrMap[m].pre += hrs;
+      else if (item.shiftType === '1st Shift') mgrMap[m].first += hrs;
+      else if (item.shiftType === '2nd Shift') mgrMap[m].second += hrs;
+      else mgrMap[m].cover += hrs;
+
+      mgrMap[m].total += hrs;
+      mgrMap[m].count += 1;
+    });
+
+    const mgrBody = document.getElementById('managerBreakdownBody');
+    mgrBody.innerHTML = '';
+    let totPre = 0, tot1st = 0, tot2nd = 0, totCov = 0;
+
+    Object.keys(mgrMap).forEach(mgr => {
+      const d = mgrMap[mgr];
+      totPre += d.pre; tot1st += d.first; tot2nd += d.second; totCov += d.cover;
+      mgrBody.innerHTML += `
+        <tr>
+          <td><strong>${mgr}</strong></td>
+          <td>${d.pre.toFixed(2)}</td>
+          <td>${d.first.toFixed(2)}</td>
+          <td>${d.second.toFixed(2)}</td>
+          <td>${d.cover.toFixed(2)}</td>
+          <td><strong style="color:var(--accent);">${d.total.toFixed(2)}</strong></td>
+          <td>${d.count}</td>
+        </tr>
+      `;
+    });
+
+    mgrBody.innerHTML += `
+      <tr style="background:rgba(255,255,255,0.04); font-weight:700;">
+        <td>Total</td>
+        <td>${totPre.toFixed(2)}</td>
+        <td>${tot1st.toFixed(2)}</td>
+        <td>${tot2nd.toFixed(2)}</td>
+        <td>${totCov.toFixed(2)}</td>
+        <td style="color:var(--accent);">${totalHrs.toFixed(2)}</td>
+        <td>${totalShifts}</td>
+      </tr>
+    `;
+
+    // 3. Weekly Summary (Sun - Sat)
+    const weekMap = {};
+    // Ensure current seeded weeks appear even if empty
+    weekMap['2026-11-15'] = { pre:0, first:0, second:0, cover:0, total:0, shifts:0 };
+    weekMap['2026-11-22'] = { pre:0, first:0, second:0, cover:0, total:0, shifts:0 };
+
+    shiftLogs.forEach(item => {
+      const sun = getSundayOfWeek(item.date);
+      if (!weekMap[sun]) {
+        weekMap[sun] = { pre:0, first:0, second:0, cover:0, total:0, shifts:0 };
+      }
+      const hrs = Number(item.workedHours);
+      if (item.shiftType === 'Pre Shift') weekMap[sun].pre += hrs;
+      else if (item.shiftType === '1st Shift') weekMap[sun].first += hrs;
+      else if (item.shiftType === '2nd Shift') weekMap[sun].second += hrs;
+      else weekMap[sun].cover += hrs;
+
+      weekMap[sun].total += hrs;
+      weekMap[sun].shifts += 1;
+    });
+
+    const weekBody = document.getElementById('weeklySummaryBody');
+    weekBody.innerHTML = '';
+    const sortedWeeks = Object.keys(weekMap).sort();
+    sortedWeeks.forEach((sun, idx) => {
+      const w = weekMap[sun];
+      const sat = addDays(sun, 6);
+      const label = idx === 0 ? `Week ${idx + 1} (Current)` : `Week ${idx + 1}`;
+      weekBody.innerHTML += `
+        <tr>
+          <td><strong>${label}</strong></td>
+          <td>${sun}</td>
+          <td>${sat}</td>
+          <td><strong style="color:var(--accent);">${w.total.toFixed(2)}</strong></td>
+          <td>${w.shifts}</td>
+          <td>${w.pre.toFixed(2)}</td>
+          <td>${w.first.toFixed(2)}</td>
+          <td>${w.second.toFixed(2)}</td>
+          <td>${w.cover.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    // 4. Full History Table
+    const search = document.getElementById('logSearch').value.toLowerCase();
+    const filterShift = document.getElementById('logShiftFilter').value;
+
+    const filtered = shiftLogs.filter(item => {
+      const matchesText = item.manager.toLowerCase().includes(search) || (item.notes && item.notes.toLowerCase().includes(search));
+      const matchesShift = !filterShift || item.shiftType === filterShift;
+      return matchesText && matchesShift;
+    });
+
+    const fullBody = document.getElementById('fullLogBody');
+    fullBody.innerHTML = '';
+    filtered.forEach(item => {
+      fullBody.innerHTML += `
+        <tr>
+          <td style="font-size:0.8rem; color:var(--text-muted);">${item.timestamp}</td>
+          <td>${item.date}</td>
+          <td><strong>${item.manager}</strong></td>
+          <td><span class="badge">${item.shiftType}</span></td>
+          <td>${Number(item.baseHours).toFixed(2)}</td>
+          <td><strong style="color:var(--accent);">${Number(item.workedHours).toFixed(2)}</strong></td>
+          <td>${item.notes || '—'}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteLogEntry('${item.id}')">Delete</button></td>
+        </tr>
+      `;
+    });
+  }
+
+  function deleteLogEntry(id) {
+    shiftLogs = shiftLogs.filter(item => item.id !== id);
+    localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(shiftLogs));
+    renderLastSubmission();
+    renderMasterLog();
+    showToast('Entry deleted');
+  }
+
+  function resetSeedData() {
+    if (!confirm('Restore original Red\'s Tracker sample entries?')) return;
+    shiftLogs = getDefaultLogs();
+    localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(shiftLogs));
+    renderLastSubmission();
+    renderMasterLog();
+    showToast('Sample data restored');
+  }
+
+  function exportLogsCSV() {
+    const headers = ['Timestamp','Date','Manager','Shift Type','Base Hours','Worked Hours','Notes'];
+    const rows = shiftLogs.map(r => [r.timestamp, r.date, `"${r.manager}"`, r.shiftType, r.baseHours, r.workedHours, `"${(r.notes || '').replace(/"/g,'""')}"`].join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    downloadFile(csv, 'reds-tracker-hours.csv', 'text/csv');
+  }
+
+  function exportLogsJSON() {
+    const payload = JSON.stringify({ eodState, shiftLogs }, null, 2);
+    downloadFile(payload, 'reds-tracker-backup.json', 'application/json');
+  }
+
+  function downloadFile(content, filename, mime) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Initialize Everything on Load
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('hrDate').value = '2026-11-16';
+    initEodUI();
+    updateNoteOutput();
+    renderLastSubmission();
+    renderMasterLog();
+  });
+</script>
+</body>
+</html>
